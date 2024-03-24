@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Approximation / Regression</title>
-</head>
-<body>
-    
-</body>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
+    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
+  </head>
+  <body>
+    <div id="config-container" class="flex flex-a-center-j-between debugging-red">
+      <div>
+        <input type="text" class="config-input" />
+        <button>Send</button>
+      </div>
+    </div>
+    <div class="flex">
+
+      <div id="display-container" class="debugging-blue">
+        <py-env>
+           - matplotlib 
+        </py-env>
+        <py-script src="visual.py"></py-script>
+      </div>
+
+      <div id="meta-container" class="debugging-green"></div>
+    </div>
+  </body>
 </html>
