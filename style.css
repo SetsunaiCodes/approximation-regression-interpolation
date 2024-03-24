@@ -4,7 +4,6 @@ body,html{
     margin: 0;
     padding: 0;
 }
-
 /*debugging classes*/
 .debugging-red{
     background-color: rgb(238, 133, 133);
