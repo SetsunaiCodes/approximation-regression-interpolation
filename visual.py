@@ -1,17 +1,20 @@
 #Hier wird basierend auf equation.py die Visualisierung generiert
 import matplotlib.pyplot as plt
+import numpy as np
+
+N = 21
+x = np.linspace(0, 10, 11)
+y = [3.9, 4.4, 10.8, 10.3, 11.2, 13.1, 14.1,  9.9, 13.9, 15.1, 12.5]
+
+# fit a linear curve and estimate its y-values and their error.
+a, b = np.polyfit(x, y, deg=1)
+y_est = a * x + b
+y_err = x.std() * np.sqrt(1/len(x) +
+                          (x - x.mean())**2 / np.sum((x - x.mean())**2))
 
 fig, ax = plt.subplots()
-
-fruits = ['apple', 'blueberry', 'cherry', 'orange']
-counts = [40, 100, 30, 55]
-bar_labels = ['red', 'blue', '_red', 'orange']
-bar_colors = ['tab:red', 'tab:blue', 'tab:red', 'tab:orange']
-
-ax.bar(fruits, counts, label=bar_labels, color=bar_colors)
-
-ax.set_ylabel('fruit supply')
-ax.set_title('Fruit supply by kind and color')
-ax.legend(title='Fruit color')
+ax.plot(x, y_est, '-')
+ax.fill_between(x, y_est - y_err, y_est + y_err, alpha=0.2)
+ax.plot(x, y, 'o', color='tab:brown')
 
 plt
