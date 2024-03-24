@@ -1,3 +1,59 @@
+/*Initial*/
+
 body,html{
     margin: 0;
+    padding: 0;
+}
+
+/*debugging classes*/
+.debugging-red{
+    background-color: rgb(238, 133, 133);
+}
+
+.debugging-blue{
+    background-color: rgb(128, 128, 243);
+}
+
+.debugging-green{
+    background-color: rgb(133, 241, 133);
+}
+
+/*rooting*/
+
+:root{
+    /*values*/
+
+
+}
+
+/*flex classes*/
+
+.flex{
+    display: flex;
+}
+
+.flex-center{
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-a-center-j-between{
+    justify-content: space-between;
+    align-items: center;
+}
+
+/*main container*/
+#config-container{
+    height: 10vh;
+    width: 100vw;
+}
+
+#display-container{
+    height: 90vh;
+    width: 80vw;
+}
+
+#meta-container{
+    height: 90vh;
+    width: 20vw;
 }
