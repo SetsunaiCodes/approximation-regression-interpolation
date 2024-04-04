@@ -52,7 +52,9 @@ app.layout = html.Div(
                         "background-color": "blue",
                     },
                     children=[
-                        dcc.Graph(id="linear-regression-plot"),
+                        dcc.Graph(
+                             id="linear-regression-plot"
+                        ),
                     ],
                 ),
                 html.Div(
