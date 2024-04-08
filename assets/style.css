@@ -1,0 +1,37 @@
+/*Initial*/
+body,html{
+    margin: 0;
+    padding: 0;
+}
+
+
+/*Rooting*/
+:root{
+
+}
+
+/*flex*/
+.flex{
+    display: flex;
+}
+
+
+/*Input Area*/
+#input-area{
+   height: 12vh;
+   background-color: red;
+}
+
+
+#plot-container{
+    height: 88vh;
+    width: 80vw;
+    background-color: blue;
+}
+
+#analyse-container{
+    height: 88vh;
+    width: 20vw;
+    background-color: green;
+    text-align: center;
+}

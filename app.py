@@ -24,16 +24,11 @@ predictions = model.predict(X)
 # App-Layout erstellen
 app = dash.Dash(__name__)
 
-# Setze die externe CSS-Datei mit benutzerdefinierten Stilregeln
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-
-# Initialisiere die Dash-App mit externen Stilen
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div(
     [
         html.Div(
-            style={"height": "18vh", "background-color": "red"},
+            id="input-area",
             children=[
                 dcc.Input(
                     id="input_1",
@@ -43,14 +38,10 @@ app.layout = html.Div(
             ],
         ),
         html.Div(
-            style={"display": "flex"},
+            className="flex",
             children=[
                 html.Div(
-                    style={
-                        "width": "80vw",
-                        "height": "75vh",
-                        "background-color": "blue",
-                    },
+                    id="plot-container",
                     children=[
                         dcc.Graph(
                              id="linear-regression-plot"
@@ -58,20 +49,15 @@ app.layout = html.Div(
                     ],
                 ),
                 html.Div(
-                    style={
-                        "width": "20vw",
-                        "height": "75vh",
-                        "background-color": "green",
-                    },
+                    id="analyse-container",
                     children=[
-                        html.P("Hier stehen Analytics", style={"text-align": "center"})
+                        html.P("Hier stehen Analytics")
                     ],
                 ),
             ],
         ),
     ],
 )
-
 
 # Callback erstellen, damit der Plot aktualisiert werden kann
 @app.callback(
