@@ -2,12 +2,27 @@
 body,html{
     margin: 0;
     padding: 0;
+    background-color: var(--background);
 }
 
 
 /*Rooting*/
 :root{
+    /*Colors*/
 
+     /*Backgrounds*/
+    --background: rgb(28, 29, 39);
+    --background-secondary: rgb(50,52,71);
+    --background-third: rgb(65,67,85);
+
+     /*Main Colors*/
+    --primary: rgb(116,227,152);
+    --secondary: rgb(62,177,178);
+
+    /*Values*/
+    --border-radius: 5px;
+    --container-padding: 18px 15px;
+    --component-padding: 20px 10px;
 }
 
 /*flex*/
@@ -16,22 +31,56 @@ body,html{
 }
 
 
-/*Input Area*/
+/*Components*/
 #input-area{
-   height: 12vh;
-   background-color: red;
+   padding: var(--component-padding);
 }
 
+.input-area-input{
+    width: 40vw;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    border-top: 2px solid var(--background-third);
+    border-bottom: 2px solid var(--background-third);
+    border-left: 2px solid var(--background-third);
+    border-top-left-radius: var(--border-radius);
+    border-bottom-left-radius: var(--border-radius);
+    color: white;
+}
+
+.submit-btn{
+    border: none;
+    padding: 12px;
+    border-top-right-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+}
+
+.submit-btn:hover{
+    background-color: var(--secondary);
+    cursor: pointer;
+
+}
 
 #plot-container{
-    height: 88vh;
+    padding: 0px 10px;
     width: 80vw;
-    background-color: blue;
+    height: 70vh;
 }
 
 #analyse-container{
-    height: 88vh;
+    padding: 0px 10px;
     width: 20vw;
-    background-color: green;
-    text-align: center;
 }
+
+/*Sectioning*/
+.container{
+    color: white;
+    padding: var(--container-padding);
+    background-color: var(--background-secondary);
+    border-radius: var(--border-radius);
+}
+

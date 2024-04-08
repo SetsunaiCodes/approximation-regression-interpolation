@@ -27,33 +27,59 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div(
     [
+        #Input Area
         html.Div(
             id="input-area",
             children=[
-                dcc.Input(
-                    id="input_1",
-                    type="text",
-                    placeholder="input type 1",
+                html.Div(
+                    className="container",
+                    children=[
+                        #Input + Button um neuen Punkt hinzuzufügen
+                        dcc.Input(
+                            id="input_1",
+                            type="text",
+                            className="input-area-input",
+                            placeholder="input type 1",
+                        ),
+                        html.Button(
+                            'Add',
+                            className="submit-btn"
+                        )
+                    ]
                 )
+
             ],
         ),
         html.Div(
-            className="flex",
             children=[
                 html.Div(
-                    id="plot-container",
+                    className="flex",
                     children=[
-                        dcc.Graph(
-                             id="linear-regression-plot"
-                        ),
-                    ],
-                ),
-                html.Div(
-                    id="analyse-container",
-                    children=[
-                        html.P("Hier stehen Analytics")
-                    ],
-                ),
+                        #Graph Area
+                         html.Div(
+                             id="plot-container",
+                             children=[
+                                 #Anzeigen des Graphen
+                                 dcc.Graph(
+                                 className="container",
+                                 id="linear-regression-plot"
+                                 ),
+                             ],
+                         ),
+                        #Meta Area
+                        html.Div(
+                         id="analyse-container",
+                         children=[
+                            html.Div(
+                                className="container",
+                                children=[
+                                    html.P("Hier stehen Analytics")
+                                ]
+                            )
+                         ],
+                     ),
+                   ]
+                )
             ],
         ),
     ],
@@ -67,8 +93,24 @@ app.layout = html.Div(
 def update_plot(input_value):
     # Generieren des Plots
     fig = px.scatter(df, x="X", y="Y", trendline="ols")
-    return fig
 
+    # Styling des Graphen
+    fig.update_traces(marker=dict(color='rgb(62,177,178)', size=10),
+                      selector=dict(mode='markers'))
+
+    fig.update_traces(line=dict(color='rgb(116,227,152)', width=2),
+                      selector=dict(mode='lines'))
+
+    fig.update_layout(
+                      xaxis_title="X-Achse",
+                      yaxis_title="Y-Achse",
+                      plot_bgcolor='rgba(0, 0, 0, 0)',
+                      paper_bgcolor='rgba(0, 0, 0, 0)',
+                      font=dict(family="Arial", size=12, color="white"),
+                      xaxis=dict(gridcolor='rgb(65,67,85)'),
+                      yaxis=dict(gridcolor='rgb(65,67,85)'))
+
+    return fig
 
 if __name__ == "__main__":
     app.run_server(debug=True)
