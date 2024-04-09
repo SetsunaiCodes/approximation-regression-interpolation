@@ -30,8 +30,26 @@ body,html{
     display: flex;
 }
 
+.flex-justify{
+    align-items: center;
+    justify-content: space-between;
+}
+
 
 /*Components*/
+
+#navbar{
+    height: 7vh;
+    background-color: var(--background-secondary);
+    width: auto;
+    padding: 10px;
+}
+.nav-image{
+    height: 50px;
+    width: 50px;
+    object-fit: contain;
+}
+
 #input-area{
    padding: var(--component-padding);
 }

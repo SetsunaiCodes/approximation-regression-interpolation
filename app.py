@@ -27,6 +27,26 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div(
     [
+        #Navbar Area
+        html.Nav(
+            id="navbar",
+            className="flex flex-justify",
+            children=[
+                html.Div(
+                    className="flex",
+                    children=[
+                        html.Img(
+                            className="nav-image",
+                            src="/assets/PlotSpaceLogo1.png"
+                        ),
+                        html.P(
+                            'PlotSpace'
+                        )
+                    ]
+                ),
+
+            ]
+        ),
         #Input Area
         html.Div(
             id="input-area",
