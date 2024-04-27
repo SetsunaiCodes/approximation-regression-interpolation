@@ -10,20 +10,22 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import statsmodels.api as sm
 
-# Lese die Daten ein (temporäre Mock-Excel-Tabelle)
-df = pd.read_csv("MockBook.csv", delimiter=";")
+# Definiere deine Daten als Dictionary
+data = {
+    "X": [1, 2, 3, 4, 5],
+    "Y": [2, 3, 5, 4, 6]
+}
 
-# Rechnungen über build in Rechenoperationen
-X = df["X"]  # Unabhängige Variable
+# Verwende das Dictionary in deinem Code
+X = data["X"]  # Unabhängige Variable
 X = sm.add_constant(X)  # Konstante hinzufügen
-Y = df["Y"]  # Abhängige Variable
+Y = data["Y"]  # Abhängige Variable
 model = sm.OLS(Y, X).fit()  # Lineare Regression
 # Vorhersagen errechnen
 predictions = model.predict(X)
 
 # App-Layout erstellen
 app = dash.Dash(__name__)
-
 
 app.layout = html.Div(
     [
@@ -112,7 +114,7 @@ app.layout = html.Div(
 )
 def update_plot(input_value):
     # Generieren des Plots
-    fig = px.scatter(df, x="X", y="Y", trendline="ols")
+    fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
     # Styling des Graphen
     fig.update_traces(marker=dict(color='rgb(62,177,178)', size=10),
