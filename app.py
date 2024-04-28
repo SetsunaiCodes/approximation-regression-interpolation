@@ -16,7 +16,7 @@ data = {
     "Y": [2, 3, 5, 4, 6]
 }
 
-# Verwende das Dictionary in deinem Code
+
 X = data["X"]  # Unabhängige Variable
 X = sm.add_constant(X)  # Konstante hinzufügen
 Y = data["Y"]  # Abhängige Variable
