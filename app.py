@@ -12,14 +12,14 @@ import statsmodels.api as sm
 
 # Definiere deine Daten als Dictionary
 data = {
-    "X": [1, 2, 3, 4, 5],
-    "Y": [2, 3, 5, 4, 6]
+    "x": [1, 2, 3, 4, 5],
+    "y": [2, 3, 5, 4, 6]
 }
 
 
-X = data["X"]  # Unabhängige Variable
+X = data["x"]  # Unabhängige Variable
 X = sm.add_constant(X)  # Konstante hinzufügen
-Y = data["Y"]  # Abhängige Variable
+Y = data["y"]  # Abhängige Variable
 model = sm.OLS(Y, X).fit()  # Lineare Regression
 # Vorhersagen errechnen
 predictions = model.predict(X)
