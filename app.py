@@ -67,7 +67,7 @@ app.layout = html.Div(
 )
 def update_plot(input_value):
     # Generieren des Plots
-    fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
+    fig = px.scatter(x=data["x"], y=data["y"], trendline="ols")
 
     # Styling des Graphen
     fig.update_traces(marker=dict(color='rgb(239, 115, 112)', size=10),
