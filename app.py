@@ -29,79 +29,32 @@ app = dash.Dash(__name__)
 
 app.layout = html.Div(
     [
-        #Navbar Area
-        html.Nav(
-            id="navbar",
-            className="flex flex-justify",
-            children=[
-                html.Div(
-                    className="flex",
-                    children=[
-                        html.Img(
-                            className="nav-image",
-                            src="/assets/PlotSpaceLogo1.png"
-                        ),
-                        html.P(
-                            'PlotSpace'
-                        )
-                    ]
-                ),
-
-            ]
-        ),
-        #Input Area
+        #Input Area - DIE STEHT AKTUELL AUF DISPLAY NONE
         html.Div(
             id="input-area",
             children=[
-                html.Div(
-                    className="container",
-                    children=[
-                        #Input + Button um neuen Punkt hinzuzufügen
-                        dcc.Input(
-                            id="input_1",
-                            type="text",
-                            className="input-area-input",
-                            placeholder="input type 1",
-                        ),
-                        html.Button(
-                            'Add',
-                            className="submit-btn"
-                        )
-                    ]
+                #Input + Button um neuen Punkt hinzuzufügen
+                dcc.Input(
+                    id="input_1",
+                    type="text",
+                    className="input-area-input",
+                    placeholder="input type 1",
+                ),
+                html.Button(
+                    'Add',
+                    className="submit-btn"
                 )
-
-            ],
+            ]
         ),
+        #Graph Area
         html.Div(
+            className="flex flex-center",
             children=[
-                html.Div(
-                    className="flex",
-                    children=[
-                        #Graph Area
-                         html.Div(
-                             id="plot-container",
-                             children=[
-                                 #Anzeigen des Graphen
-                                 dcc.Graph(
-                                 className="container",
-                                 id="linear-regression-plot"
-                                 ),
-                             ],
-                         ),
-                        #Meta Area
-                        html.Div(
-                         id="analyse-container",
-                         children=[
-                            html.Div(
-                                className="container",
-                                children=[
-                                    html.P("Hier stehen Analytics")
-                                ]
-                            )
-                         ],
-                     ),
-                   ]
-                )
+                #Anzeigen des Graphen
+                dcc.Graph(
+                    id="linear-regression-plot",
+                    style={'width': '98vw', 'height': '98vh'}
+                ),
             ],
         ),
     ],
@@ -117,20 +70,20 @@ def update_plot(input_value):
     fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
     # Styling des Graphen
-    fig.update_traces(marker=dict(color='rgb(62,177,178)', size=10),
+    fig.update_traces(marker=dict(color='rgb(255,0,0)', size=10),
                       selector=dict(mode='markers'))
 
-    fig.update_traces(line=dict(color='rgb(116,227,152)', width=2),
+    fig.update_traces(line=dict(color='rgb(0,0,255)', width=2),
                       selector=dict(mode='lines'))
 
     fig.update_layout(
                       xaxis_title="X-Achse",
                       yaxis_title="Y-Achse",
-                      plot_bgcolor='rgba(0, 0, 0, 0)',
-                      paper_bgcolor='rgba(0, 0, 0, 0)',
-                      font=dict(family="Arial", size=12, color="white"),
-                      xaxis=dict(gridcolor='rgb(65,67,85)'),
-                      yaxis=dict(gridcolor='rgb(65,67,85)'))
+                      plot_bgcolor='rgba(255, 255, 255, 1)',
+                      paper_bgcolor='rgba(255, 255, 255, 1)',
+                      font=dict(family="Arial", size=12, color="black"),
+                      xaxis=dict(gridcolor='rgb(128,128,128)'),
+                      yaxis=dict(gridcolor='rgb(128,128,128)'))
 
     return fig
 
