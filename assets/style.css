@@ -2,18 +2,12 @@
 body,html{
     margin: 0;
     padding: 0;
-    background-color: var(--background);
 }
 
 
 /*Rooting*/
 :root{
     /*Colors*/
-
-     /*Backgrounds*/
-    --background: rgb(28, 29, 39);
-    --background-secondary: rgb(50,52,71);
-    --background-third: rgb(65,67,85);
 
      /*Main Colors*/
     --primary: rgb(116,227,152);
@@ -30,6 +24,11 @@ body,html{
     display: flex;
 }
 
+.flex-center{
+    justify-content: center;
+    align-items: center;
+}
+
 .flex-justify{
     align-items: center;
     justify-content: space-between;
@@ -38,20 +37,9 @@ body,html{
 
 /*Components*/
 
-#navbar{
-    height: 7vh;
-    background-color: var(--background-secondary);
-    width: auto;
-    padding: 10px;
-}
-.nav-image{
-    height: 50px;
-    width: 50px;
-    object-fit: contain;
-}
-
 #input-area{
    padding: var(--component-padding);
+   display: none;
 }
 
 .input-area-input{
@@ -81,24 +69,5 @@ body,html{
     background-color: var(--secondary);
     cursor: pointer;
 
-}
-
-#plot-container{
-    padding: 0px 10px;
-    width: 80vw;
-    height: 70vh;
-}
-
-#analyse-container{
-    padding: 0px 10px;
-    width: 20vw;
-}
-
-/*Sectioning*/
-.container{
-    color: white;
-    padding: var(--container-padding);
-    background-color: var(--background-secondary);
-    border-radius: var(--border-radius);
 }
 
