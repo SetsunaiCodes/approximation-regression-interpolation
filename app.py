@@ -70,10 +70,10 @@ def update_plot(input_value):
     fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
     # Styling des Graphen
-    fig.update_traces(marker=dict(color='rgb(255,0,0)', size=10),
+    fig.update_traces(marker=dict(color='rgb(239, 115, 112)', size=10),
                       selector=dict(mode='markers'))
 
-    fig.update_traces(line=dict(color='rgb(0,0,255)', width=2),
+    fig.update_traces(line=dict(color='rgb(140, 116, 231)', width=4),
                       selector=dict(mode='lines'))
 
     fig.update_layout(
@@ -81,9 +81,9 @@ def update_plot(input_value):
                       yaxis_title="Y-Achse",
                       plot_bgcolor='rgba(255, 255, 255, 1)',
                       paper_bgcolor='rgba(255, 255, 255, 1)',
-                      font=dict(family="Arial", size=12, color="black"),
-                      xaxis=dict(gridcolor='rgb(128,128,128)'),
-                      yaxis=dict(gridcolor='rgb(128,128,128)'))
+                      font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
+                      xaxis=dict(gridcolor='rgb(211,211,211)'),  
+                      yaxis=dict(gridcolor='rgb(211,211,211)'))  
 
     return fig
 
