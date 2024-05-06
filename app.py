@@ -20,14 +20,15 @@ import statsmodels.api as sm
 
 # Dictionary
 data = {
-    "x": [1, 2, 3, 4, 5],
-    "y": [2, 3, 5, 4, 6]
+    "X": [1, 2, 3, 4, 6, 4, 2],
+    "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
-X = data["x"]  # Unabhängige Variable
+X = data["X"]  # Unabhängige Variable
 X = sm.add_constant(X)  # Konstante hinzufügen
-Y = data["y"]  # Abhängige Variable
-model = sm.OLS(Y, X).fit()  # Lineare Regression
+Y = data["Y"]  # Abhängige Variable
+model = sm.OLS(Y, X).fit()  # Lineare Regression als Model angeben 
+
 # Vorhersagen errechnen
 predictions = model.predict(X)
 
@@ -81,7 +82,7 @@ app.layout = html.Div(
 )
 def update_plot(input_value):
     # Generieren der Punkte und der Linie für den Plot (Punkte x,y || Linie trendline="ols")
-    fig = px.scatter(x=data["x"], y=data["y"], trendline="ols")
+    fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
     # Styling des Graphen
     fig.update_traces(marker=dict(color='rgb(239, 115, 112)', size=10),
