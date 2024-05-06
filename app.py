@@ -1,4 +1,7 @@
-# Import und Initialisierung
+
+###########################################
+##### Import und Initialisierung ##########
+###########################################
 
 # Rechnungsimports
 import pandas as pd
@@ -10,12 +13,16 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 import statsmodels.api as sm
 
-# Definiere deine Daten als Dictionary
+
+###########################################
+############ Daten definieren #############
+###########################################
+
+# Dictionary
 data = {
     "x": [1, 2, 3, 4, 5],
     "y": [2, 3, 5, 4, 6]
 }
-
 
 X = data["x"]  # Unabhängige Variable
 X = sm.add_constant(X)  # Konstante hinzufügen
@@ -24,16 +31,19 @@ model = sm.OLS(Y, X).fit()  # Lineare Regression
 # Vorhersagen errechnen
 predictions = model.predict(X)
 
-# App-Layout erstellen
+###########################################
+######### App-Layout generieren ###########
+###########################################
+
 app = dash.Dash(__name__)
 
+# Root App Container (Struktur ähnlich zu Kotlin oder Dart)
 app.layout = html.Div(
     [
         #Input Area - DIE STEHT AKTUELL AUF DISPLAY NONE
         html.Div(
             id="input-area",
             children=[
-                #Input + Button um neuen Punkt hinzuzufügen
                 dcc.Input(
                     id="input_1",
                     type="text",
@@ -60,7 +70,11 @@ app.layout = html.Div(
     ],
 )
 
-# Callback erstellen, damit der Plot aktualisiert werden kann
+
+###########################################
+############# Callback Area ###############
+###########################################
+
 @app.callback(
     Output("linear-regression-plot", "figure"),
     [Input("input_1", "value")],
