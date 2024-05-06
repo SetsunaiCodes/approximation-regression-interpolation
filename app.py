@@ -80,7 +80,7 @@ app.layout = html.Div(
     [Input("input_1", "value")],
 )
 def update_plot(input_value):
-    # Generieren des Plots
+    # Generieren der Punkte und der Linie für den Plot (Punkte x,y || Linie trendline="ols")
     fig = px.scatter(x=data["x"], y=data["y"], trendline="ols")
 
     # Styling des Graphen
@@ -90,6 +90,7 @@ def update_plot(input_value):
     fig.update_traces(line=dict(color='rgb(140, 116, 231)', width=4),
                       selector=dict(mode='lines'))
 
+    # Styling der Punkte und der Linie
     fig.update_layout(
                       xaxis_title="X-Achse",
                       yaxis_title="Y-Achse",
@@ -101,5 +102,6 @@ def update_plot(input_value):
 
     return fig
 
+# Command um den Flask Server zu starten
 if __name__ == "__main__":
     app.run_server(debug=True)
