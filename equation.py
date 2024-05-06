@@ -32,7 +32,7 @@ for i in x:
     # Alternativen zum quadrieren: pow() und math.pow()
 
 for i in x:
-    Sxy += (x[i] - MittelwertX) * (y[i] - MittelwertY)**2
+    Sxy += (x[i] - MittelwertX)**2 * (y[i] - MittelwertY)**2
 
 
 Steigung = Sx / Sxy
