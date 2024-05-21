@@ -39,7 +39,6 @@ body,html{
 
 #input-area{
    padding: var(--component-padding);
-   display: none;
 }
 
 .input-area-input{
