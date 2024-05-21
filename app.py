@@ -1,4 +1,3 @@
-
 ###########################################
 ##### Import und Initialisierung ##########
 ###########################################
@@ -10,7 +9,7 @@ import plotly.express as px
 # Visualimports
 import dash
 from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import statsmodels.api as sm
 
 
@@ -24,13 +23,15 @@ data = {
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
-X = data["X"]  # Unabhängige Variable
-X = sm.add_constant(X)  # Konstante hinzufügen
-Y = data["Y"]  # Abhängige Variable
-model = sm.OLS(Y, X).fit()  # Lineare Regression als Model angeben 
+def create_model(data):
+    X = data["X"]
+    X = sm.add_constant(X)
+    Y = data["Y"]
+    model = sm.OLS(Y, X).fit()
+    predictions = model.predict(X)
+    return model, predictions
 
-# Vorhersagen errechnen
-predictions = model.predict(X)
+model, predictions = create_model(data)
 
 ###########################################
 ######### App-Layout generieren ###########
@@ -38,24 +39,32 @@ predictions = model.predict(X)
 
 app = dash.Dash(__name__)
 
-# Root App Container (Struktur ähnlich zu Kotlin oder Dart)
 app.layout = html.Div(
     [
-        #Input Area - DIE STEHT AKTUELL AUF DISPLAY NONE
         html.Div(
             id="input-area",
             children=[
                 dcc.Input(
-                    id="input_1",
-                    type="text",
-                    className="input-area-input",
-                    placeholder="input type 1",
+                    id="input_x",
+                    type="number",
+                    placeholder="X-Wert",
+                ),
+                dcc.Input(
+                    id="input_y",
+                    type="number",
+                    placeholder="Y-Wert",
                 ),
                 html.Button(
                     'Add',
-                    className="submit-btn"
-                )
-            ]
+                    id="submit-btn",
+                    n_clicks=0
+                ),
+                html.Div(
+                    id="current-points",
+                    style={'margin-top': '20px'}
+                ),
+            ],
+            style={'margin-bottom': '20px'}
         ),
         #Graph Area
         html.Div(
@@ -77,21 +86,27 @@ app.layout = html.Div(
 ###########################################
 
 @app.callback(
-    Output("linear-regression-plot", "figure"),
-    [Input("input_1", "value")],
+    [Output("linear-regression-plot", "figure"),
+     Output("current-points", "children")],
+    [Input("submit-btn", "n_clicks")],
+    [State("input_x", "value"),
+     State("input_y", "value")]
 )
-def update_plot(input_value):
-    # Generieren der Punkte und der Linie für den Plot (Punkte x,y || Linie trendline="ols")
+def update_plot(n_clicks, input_x, input_y):
+    if n_clicks > 0 and input_x is not None and input_y is not None:
+        data["X"].append(input_x)
+        data["Y"].append(input_y)
+
+    model, predictions = create_model(data)
+
     fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
-    # Styling des Graphen
     fig.update_traces(marker=dict(color='rgb(239, 115, 112)', size=10),
                       selector=dict(mode='markers'))
 
     fig.update_traces(line=dict(color='rgb(140, 116, 231)', width=4),
                       selector=dict(mode='lines'))
 
-    # Styling der Punkte und der Linie
     fig.update_layout(
                       xaxis_title="X-Achse",
                       yaxis_title="Y-Achse",
@@ -101,7 +116,10 @@ def update_plot(input_value):
                       xaxis=dict(gridcolor='rgb(211,211,211)'),  
                       yaxis=dict(gridcolor='rgb(211,211,211)'))  
 
-    return fig
+    current_points = [f"({x}, {y})" for x, y in zip(data["X"], data["Y"])]
+    current_points_display = html.Ul([html.Li(point) for point in current_points])
+
+    return fig, current_points_display
 
 # Command um den Flask Server zu starten
 if __name__ == "__main__":
