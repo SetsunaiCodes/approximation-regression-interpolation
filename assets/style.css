@@ -1,60 +1,62 @@
 /*Initial*/
-body,html{
+body, html {
     margin: 0;
     padding: 0;
 }
 
-
 /*Rooting*/
-:root{
+:root {
     /*Colors*/
-
-     /*Main Colors*/
-    --primary: rgb(116,227,152);
-    --secondary: rgb(62,177,178);
+    /*Main Colors*/
+    --primary: rgb(30, 144, 255);  /* DodgerBlue */
+    --secondary: rgb(70, 130, 180);  /* SteelBlue */
+    --white: rgb(247, 247, 247);
+    --black: rgb(26, 26, 26);
 
     /*Values*/
-    --border-radius: 5px;
+    --border-radius: 8px;
     --container-padding: 18px 15px;
     --component-padding: 20px 10px;
 }
 
 /*flex*/
-.flex{
+.flex {
     display: flex;
 }
 
-.flex-center{
+.flex-center {
     justify-content: center;
     align-items: center;
 }
 
-.flex-justify{
+.flex-justify {
     align-items: center;
     justify-content: space-between;
 }
 
-
 /*Components*/
 
-#input-area{
-   padding: var(--component-padding);
+#input-area {
+    padding: var(--component-padding);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
-.input-area-input{
+#input-area.show {
+    opacity: 1;
+}
+
+.input-area-input {
     width: 40vw;
     padding: 10px;
     background-color: transparent;
     border: none;
-    border-top: 2px solid var(--background-third);
-    border-bottom: 2px solid var(--background-third);
-    border-left: 2px solid var(--background-third);
-    border-top-left-radius: var(--border-radius);
-    border-bottom-left-radius: var(--border-radius);
-    color: white;
+    border-top: 2px solid var(--secondary);
+    border-bottom: 2px solid var(--secondary);
+    color: black;
 }
 
-.submit-btn{
+.submit-btn {
     border: none;
     padding: 12px;
     border-top-right-radius: var(--border-radius);
@@ -64,9 +66,52 @@ body,html{
     font-weight: bold;
 }
 
-.submit-btn:hover{
+.submit-btn:hover {
     background-color: var(--secondary);
     cursor: pointer;
-
 }
 
+.navbar {
+    position: relative;
+    z-index: 1;
+    background-color: var(--white);
+    padding: 10px;
+    display: flex;
+    width: 50vw;
+    margin-top: 1vh;
+    margin-left: auto;
+    margin-right: auto;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 1000000px;
+    box-shadow: 0px 15px 50px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    background-color: var(--secondary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border: none;
+    height: 5vh;
+    width:  5vh;
+    cursor: pointer;
+    font-size: 28px;
+    border-radius: var(--border-radius);
+}
+
+.navbar-btn:hover {
+    background-color: var(--primary);
+}
+.close-btn {
+    background-color: transparent;
+    color: black;
+    border: none;
+    font-size: 40px;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 10px;
+}
