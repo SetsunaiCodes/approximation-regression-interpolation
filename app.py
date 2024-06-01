@@ -3,8 +3,12 @@
 ###########################################
 
 # Rechnungsimports
+
+
 import pandas as pd
 import plotly.express as px
+import random
+import numpy as np
 
 # Visualimports
 import dash
@@ -30,28 +34,45 @@ def create_model(data):
     predictions = model.predict(X)
     return model, predictions
 
+def generate_random_points():
+    new_data = {
+        "X": [],
+        "Y": []
+    }
+    for i in range(10):
+        x = random.uniform(0, 10)
+        y = np.sin(x) + random.uniform(-0.5, 0.5)
+        new_data["X"].append(x)
+        new_data["Y"].append(y)
+    return new_data
+
 model, predictions = create_model(data)
+
+
+# External CSS for Font Awesome
+external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app.css.config.serve_locally = True
 
 ###########################################
 ######### App-Layout generieren ###########
 ###########################################
-
-app = dash.Dash(__name__)
-app.css.config.serve_locally = True
 
 app.layout = html.Div(
     [
         html.Nav(
             className="navbar",
             children=[
-                html.Button('-', id='delete-button', n_clicks=0, className='navbar-btn'),
-                html.Button('+', id='add-button', n_clicks=0, className='navbar-btn')
+                html.Button(html.I(className="fas fa-minus"), id='delete-button', n_clicks=0, className='navbar-btn'),
+                html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn'),
+                html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn')
             ]
         ),
         html.Div(
             id="input-area",
             children=[
-                html.Button('×', id='close-button', n_clicks=0, className='close-btn'),
+                html.Button(html.I(className="fas fa-times"), id='close-button', n_clicks=0, className='close-btn'),
                 dcc.Input(
                     id="input_x",
                     type="number",
@@ -65,20 +86,17 @@ app.layout = html.Div(
                     className='input-area-input'
                 ),
                 html.Button(
-                    'Add',
+                    [html.I(className="fas fa-check"), " Add"],
                     id="submit-btn",
                     n_clicks=0,
                     className='submit-btn'
                 ),
             ],
-            # Standardmäßig display: none | Eingefahren / OnClick: display: inherit | Ausgefahren
             style={'margin-bottom': '20px', 'display': 'none'}  
         ),
-        # Graph Area
         html.Div(
             className="flex flex-center",
             children=[
-                # Anzeigen des Graphen
                 dcc.Graph(
                     id="linear-regression-plot",
                     style={'width': '98vw', 'height': '90vh'}
@@ -114,11 +132,12 @@ def toggle_input_area(add_clicks, close_clicks):
 @app.callback(
     Output("linear-regression-plot", "figure"),
     [Input("submit-btn", "n_clicks"),
-     Input("delete-button", "n_clicks")],
+     Input("delete-button", "n_clicks"),
+     Input("generate-button", "n_clicks")],
     [State("input_x", "value"),
      State("input_y", "value")]
 )
-def update_plot(submit_clicks, delete_clicks, input_x, input_y):
+def update_plot(submit_clicks, delete_clicks, generate_clicks, input_x, input_y):
     ctx = dash.callback_context
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
@@ -131,15 +150,20 @@ def update_plot(submit_clicks, delete_clicks, input_x, input_y):
         data["X"] = []
         data["Y"] = []
 
-    if data["X"] and data["Y"]:  # Check ob die Data Arrays nicht leer sind
+    elif button_id == 'generate-button' and generate_clicks > 0:
+        new_data = generate_random_points()
+        data["X"] = new_data["X"]
+        data["Y"] = new_data["Y"]
+
+    if data["X"] and data["Y"]:
         model, predictions = create_model(data)
 
         fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
-        fig.update_traces(marker=dict(color='rgb(70, 130, 180)', size=10),  # Anpassung der Punktfarbe
+        fig.update_traces(marker=dict(color='rgb(70, 130, 180)', size=10),
                           selector=dict(mode='markers'))
 
-        fig.update_traces(line=dict(color='rgb(30, 144, 255)', width=4),  # Anpassung der Linienfarbe
+        fig.update_traces(line=dict(color='rgb(30, 144, 255)', width=4),
                           selector=dict(mode='lines'))
 
         fig.update_layout(
@@ -148,11 +172,11 @@ def update_plot(submit_clicks, delete_clicks, input_x, input_y):
                           plot_bgcolor='rgba(255, 255, 255, 1)',
                           paper_bgcolor='rgba(255, 255, 255, 1)',
                           font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
-                          xaxis=dict(gridcolor='rgb(211,211,211)'),  
+                          xaxis=dict(gridcolor='rgb(211,211,211)'),
                           yaxis=dict(gridcolor='rgb(211,211,211)'))
 
     else:
-        fig = px.scatter()  
+        fig = px.scatter()
 
     return fig if fig.data else px.scatter()
 
