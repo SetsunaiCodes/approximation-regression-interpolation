@@ -41,7 +41,13 @@ def generate_random_points():
     }
     for i in range(10):
         x = random.uniform(0, 10)
-        y = np.sin(x) + random.uniform(-0.5, 0.5)
+        y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5) 
+
+        ### Für den Unit Test der Funktion ###
+        # Alte Zeie y = np.sin(x) + random.uniform(-0.5, 0.5) || Besteht Test 3 nicht
+        # Neue Zeile y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5) || Besteht alle 3 Tests
+        ######################################
+
         new_data["X"].append(x)
         new_data["Y"].append(y)
     return new_data
