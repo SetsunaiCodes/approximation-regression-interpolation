@@ -71,7 +71,8 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
-            style={'margin-bottom': '20px', 'display': 'none'}  # Aus gutem Grund auf display none
+            # Standardmäßig display: none | Eingefahren / OnClick: display: inherit | Ausgefahren
+            style={'margin-bottom': '20px', 'display': 'none'}  
         ),
         # Graph Area
         html.Div(
