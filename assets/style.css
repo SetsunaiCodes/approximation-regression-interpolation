@@ -14,7 +14,7 @@ body, html {
     --black: rgb(26, 26, 26);
 
     /*Values*/
-    --border-radius: 8px;
+    --border-radius: 10000px;
     --container-padding: 18px 15px;
     --component-padding: 20px 10px;
 }
