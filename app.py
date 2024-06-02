@@ -38,8 +38,10 @@ def generate_random_points():
         "X": [],
         "Y": []
     }
+    #TODO: manuell anpassbarer Wert für die Range in einem Input
     for i in range(10):
         x = random.uniform(0, 10)
+        #TODO: Min / Max Cap sollte zufällig sein
         y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5) 
 
         ### Für den Unit Test der Funktion ###
