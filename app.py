@@ -2,23 +2,20 @@
 ##### Import und Initialisierung ##########
 ###########################################
 
-# Rechnungsimports
-
-
-import pandas as pd
+# Rechnungsimporte
 import plotly.express as px
 import random
 import numpy as np
 
-# Visualimports
+# Visualimporte
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import statsmodels.api as sm
 
-###########################################
-############ Daten definieren #############
-###########################################
+#########################################
+#### Daten und Funktionen definieren ####
+#########################################
 
 # Dictionary
 data = {
@@ -26,6 +23,7 @@ data = {
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
+# Funktion um Daten für den Graphen zu generieren
 def create_model(data):
     X = data["X"]
     X = sm.add_constant(X)
@@ -34,6 +32,7 @@ def create_model(data):
     predictions = model.predict(X)
     return model, predictions
 
+# Funktion um zufällig Punkte zu generieren
 def generate_random_points():
     new_data = {
         "X": [],
@@ -55,11 +54,12 @@ def generate_random_points():
 model, predictions = create_model(data)
 
 
-# External CSS for Font Awesome
+# Externes Stylesheet für Font Awesome icons
 external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.css.config.serve_locally = True
+
 
 ###########################################
 ######### App-Layout generieren ###########
@@ -67,18 +67,29 @@ app.css.config.serve_locally = True
 
 app.layout = html.Div(
     [
+
         html.Nav(
             className="navbar",
             children=[
-                html.Button(html.I(className="fas fa-minus"), id='delete-button', n_clicks=0, className='navbar-btn'),
-                html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn'),
-                html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn')
+                html.Div(
+                    id="logo-container",
+                    children=[
+                        html.Img(src="assets/SionLogo.png", alt="Sion Logo", className="branding")
+                    ]
+                ),
+                html.Div(
+                    id="nav-button-container",
+                    children=[
+                        html.Button(html.I(className="fas fa-trash"), id='delete-button', n_clicks=0, className='navbar-btn'),
+                        html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn'),
+                        html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn')
+                    ]
+                )
             ]
         ),
         html.Div(
             id="input-area",
             children=[
-                html.Button(html.I(className="fas fa-times"), id='close-button', n_clicks=0, className='close-btn'),
                 dcc.Input(
                     id="input_x",
                     type="number",
@@ -119,18 +130,18 @@ app.layout = html.Div(
 @app.callback(
     Output("input-area", "style"),
     [Input("add-button", "n_clicks"),
-     Input("close-button", "n_clicks")]
+     Input("delete-button", "n_clicks")]
 )
-def toggle_input_area(add_clicks, close_clicks):
+def toggle_input_area(add_clicks, delete_clicks):
     ctx = dash.callback_context
     if not ctx.triggered:
         return {'margin-bottom': '20px', 'display': 'none'}
 
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    if button_id == 'add-button' and add_clicks > 0:
-        return {'margin-bottom': '20px', 'display': 'block', 'transition': 'opacity 0.5s ease-in-out', 'opacity': 1}
-    elif button_id == 'close-button' and close_clicks > 0:
+    if button_id == 'add-button' and add_clicks % 2 == 1: 
+        return {'margin-bottom': '20px', 'display': 'flex', 'justify-content': 'center','align-items': 'center', 'transition': 'opacity 0.5s ease-in-out', 'opacity': 1}
+    elif button_id == 'delete-button' and delete_clicks > 0:
         return {'margin-bottom': '20px', 'display': 'none'}
     else:
         return {'margin-bottom': '20px', 'display': 'none'}
@@ -166,17 +177,17 @@ def update_plot(submit_clicks, delete_clicks, generate_clicks, input_x, input_y)
 
         fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
-        fig.update_traces(marker=dict(color='rgb(70, 130, 180)', size=10),
+        fig.update_traces(marker=dict(color='rgb(15, 91, 152)', size=10),
                           selector=dict(mode='markers'))
 
-        fig.update_traces(line=dict(color='rgb(30, 144, 255)', width=4),
+        fig.update_traces(line=dict(color='rgb(10, 140, 247)', width=4),
                           selector=dict(mode='lines'))
 
         fig.update_layout(
                           xaxis_title="X-Achse",
                           yaxis_title="Y-Achse",
-                          plot_bgcolor='rgba(255, 255, 255, 1)',
-                          paper_bgcolor='rgba(255, 255, 255, 1)',
+                          plot_bgcolor='rgba(247, 247, 247, 1)',
+                          paper_bgcolor='rgba(247, 247, 247, 1)',
                           font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
                           xaxis=dict(gridcolor='rgb(211,211,211)'),
                           yaxis=dict(gridcolor='rgb(211,211,211)'))
