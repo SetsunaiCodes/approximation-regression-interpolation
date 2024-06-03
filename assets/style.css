@@ -23,7 +23,7 @@
 body, html {
     margin: 0;
     padding: 0;
-    overflow-y: hidden;
+    overflow: hidden;
     background-color: var(--bg);
 }
 
@@ -43,17 +43,28 @@ body, html {
 }
 
 /*Components*/
-
 #input-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 10px;
-    padding: var(--component-padding);
     opacity: 0;
+    visibility: hidden;
     transition: opacity 0.5s ease-in-out;
 }
 
 #input-area.show {
     opacity: 1;
+    visibility: visible;
 }
+
+#input-area.hide {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
+}
+
+
 
 .input-area-input {
     width: 20vw;
@@ -86,11 +97,11 @@ body, html {
     padding: 10px 20px;
     justify-content: space-between;
     align-items: center;
-    z-index: 1;
-    
+    z-index: 1;    
 }
 
 .branding{
+    padding-top: 10px;
     height: 90px;
     width: 230px;
     object-fit: contain;
@@ -103,8 +114,10 @@ body, html {
     gap: 10px;
 }
 
-.navbar-btn {
-    background-color: var(--primary);
+
+
+#add-button {
+    background: var(--primary);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -117,6 +130,18 @@ body, html {
     border-radius: var(--border-radius);
 }
 
-.navbar-btn:hover {
+#add-button:hover {
     background-color: var(--third);
+}
+
+.navbar-btn-secondary{
+    color: var(--primary);
+    background: none;
+    border: none;
+    font-size: 18px;
+}
+
+.navbar-btn-secondary:hover{
+    color: var(--third);
+    cursor: pointer;
 }

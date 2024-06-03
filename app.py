@@ -69,7 +69,6 @@ app.css.config.serve_locally = True
 
 app.layout = html.Div(
     [
-
         html.Nav(
             className="navbar",
             children=[
@@ -82,15 +81,16 @@ app.layout = html.Div(
                 html.Div(
                     id="nav-button-container",
                     children=[
-                        html.Button(html.I(className="fas fa-trash"), id='delete-button', n_clicks=0, className='navbar-btn'),
-                        html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn'),
-                        html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn')
+                        html.Button(html.I(className="fas fa-trash"), id='delete-button', n_clicks=0, className='navbar-btn-secondary'),
+                        html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn-secondary'),
+                        html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn')
                     ]
                 )
             ]
         ),
         html.Div(
             id="input-area",
+            className='',
             children=[
                 dcc.Input(
                     id="input_x",
@@ -111,7 +111,7 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
-            style={'margin-bottom': '20px', 'display': 'none'}  
+            style={'display': 'none'} 
         ),
         html.Div(
             className="flex flex-center",
@@ -125,6 +125,7 @@ app.layout = html.Div(
     ],
 )
 
+
 ###########################################
 ############# Callback Area ###############
 ###########################################
@@ -134,20 +135,39 @@ app.layout = html.Div(
     [Input("add-button", "n_clicks"),
      Input("delete-button", "n_clicks")]
 )
-def toggle_input_area(add_clicks, delete_clicks):
+def toggle_input_area_display(add_clicks, delete_clicks):
     ctx = dash.callback_context
     if not ctx.triggered:
-        return {'margin-bottom': '20px', 'display': 'none'}
+        return {'display': 'none'}
 
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    if button_id == 'add-button' and add_clicks % 2 == 1: 
-        return {'margin-bottom': '20px', 'display': 'flex', 'justify-content': 'center','align-items': 'center', 'transition': 'opacity 0.5s ease-in-out', 'opacity': 1}
+    if button_id == 'add-button' and add_clicks % 2 == 1:
+        return {'display': 'flex'}
     elif button_id == 'delete-button' and delete_clicks > 0:
-        return {'margin-bottom': '20px', 'display': 'none'}
+        return {'display': 'none'}
     else:
-        return {'margin-bottom': '20px', 'display': 'none'}
+        return {'display': 'none'}
 
+@app.callback(
+    Output("input-area", "className"),
+    [Input("add-button", "n_clicks"),
+     Input("delete-button", "n_clicks")]
+)
+def toggle_input_area_animation(add_clicks, delete_clicks):
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        return ''
+
+    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+
+    if button_id == 'add-button' and add_clicks % 2 == 1:
+        return 'show'
+    elif button_id == 'delete-button' and delete_clicks > 0:
+        return ''
+    else:
+        return ''
+    
 @app.callback(
     Output("linear-regression-plot", "figure"),
     [Input("submit-btn", "n_clicks"),
