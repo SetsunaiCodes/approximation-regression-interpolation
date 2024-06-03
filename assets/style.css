@@ -19,7 +19,6 @@
 }
 
 /*Initial*/
-
 body, html {
     margin: 0;
     padding: 0;
@@ -63,8 +62,6 @@ body, html {
     visibility: hidden;
     transition: opacity 0.5s ease-in-out, visibility 0s 0.5s;
 }
-
-
 
 .input-area-input {
     width: 20vw;
@@ -113,8 +110,6 @@ body, html {
     align-self: center;
     gap: 10px;
 }
-
-
 
 #add-button {
     background: var(--primary);
