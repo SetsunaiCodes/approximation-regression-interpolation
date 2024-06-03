@@ -15,6 +15,7 @@
     --padding-sm: 12px 8px;
     --padding-btn: 12px 30px;
     --container-padding: 18px 15px;
+    --container-padding-lg: 13px 32px;
     --component-padding: 20px 10px;
 }
 
@@ -78,7 +79,7 @@ body, html {
     border-radius: var(--border-radius);
     background-color: var(--primary);
     color: white;
-    font-weight: bold;
+    font-weight: bold; 
 }
 
 .submit-btn:hover {
@@ -87,24 +88,26 @@ body, html {
 }
 
 .navbar {
-    position: relative;
-    width: 98%;
     height: 8vh;
     display: flex;
-    padding: 10px 20px;
     justify-content: space-between;
-    align-items: center;
-    z-index: 1;    
+    padding: var(--container-padding-lg);
+    background-color: var(--white);
 }
 
-.branding{
-    padding-top: 10px;
+#logo-container {
+    display: flex;
+    align-items: center;
+}
+
+.branding {
+    margin-right: 10px;
     height: 90px;
     width: 230px;
     object-fit: contain;
 }
 
-#nav-button-container{
+#nav-button-container {
     display: flex;
     justify-content: center;
     align-self: center;
@@ -119,7 +122,7 @@ body, html {
     color: white;
     border: none;
     height: 5vh;
-    width:  5vh;
+    width: 5vh;
     cursor: pointer;
     font-size: 20px;
     border-radius: var(--border-radius);
@@ -129,14 +132,44 @@ body, html {
     background-color: var(--third);
 }
 
-.navbar-btn-secondary{
+.navbar-btn-secondary {
     color: var(--primary);
     background: none;
     border: none;
     font-size: 18px;
 }
 
-.navbar-btn-secondary:hover{
+.navbar-btn-secondary:hover {
     color: var(--third);
     cursor: pointer;
+}
+
+.point-list {
+    width: 10vw;
+    height: 90vh;
+    overflow-y: auto;
+    background-color: var(--bg);
+    padding: var(--container-padding);
+    border-left: 2px solid var(--primary);
+}
+
+.point-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--padding-sm);
+    border-bottom: 1px solid var(--primary);
+}
+
+.delete-point-btn {
+    background-color: var(--primary);
+    border: none;
+    color: white;
+    border-radius: var(--border-radius);
+    padding: var(--padding-sm);
+    cursor: pointer;
+}
+
+.delete-point-btn:hover {
+    background-color: var(--third);
 }

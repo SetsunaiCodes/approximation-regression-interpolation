@@ -1,71 +1,51 @@
-###########################################
-##### Import und Initialisierung ##########
-###########################################
+################################
+########### Imports ############
+################################
 
-# Rechnungsimporte
 import random
 import numpy as np
-
-# Visualimporte
 import plotly.express as px
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 import statsmodels.api as sm
 
-#########################################
-#### Daten und Funktionen definieren ####
-#########################################
-
-# Dictionary
+# Data Object
 data = {
     "X": [1, 2, 3, 4, 6, 4, 2],
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
-# Funktion um Daten für den Graphen zu generieren
+# Func um das Regresionsmodell und die Vorhersage zu generieren
 def create_model(data):
-    X = data["X"]
-    X = sm.add_constant(X)
+    X = sm.add_constant(data["X"])
     Y = data["Y"]
     model = sm.OLS(Y, X).fit()
     predictions = model.predict(X)
     return model, predictions
 
-# Funktion um zufällig Punkte zu generieren
+# Func um random Punkte zu generiern
 def generate_random_points():
-    new_data = {
-        "X": [],
-        "Y": []
-    }
-    #FIXME: manuell anpassbarer Wert für die Range in einem Input
-    for i in range(10):
+    new_data = {"X": [], "Y": []}
+    for _ in range(10):
         x = random.uniform(0, 10)
-        #FIXME: Min / Max Cap (Maxima und Minima der Sinus Kurve) sollte zufällig sein
-        y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5) 
-
-        ### Für den Unit Test der Funktion ###
-        # Alte Zeie y = np.sin(x) + random.uniform(-0.5, 0.5) || Besteht Test 3 nicht, da y nicht zuverlässig im Intervall -0,5 - 1,5 landet
-        # Neue Zeile y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5) || Besteht alle 3 Tests
-        ######################################
-
+        y = max(min(np.sin(x) + random.uniform(-0.5, 0.5), 1.5), -0.5)
         new_data["X"].append(x)
         new_data["Y"].append(y)
     return new_data
 
 model, predictions = create_model(data)
 
-
-# Externes Stylesheet für Font Awesome icons
+# Externes Stylesheet Font Awesome
 external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.css.config.serve_locally = True
 
+################################
+########### App Layout #########
+################################
 
-###########################################
-######### App-Layout generieren ###########
-###########################################
 
 app.layout = html.Div(
     [
@@ -81,8 +61,9 @@ app.layout = html.Div(
                 html.Div(
                     id="nav-button-container",
                     children=[
-                        html.Button(html.I(className="fas fa-trash"), id='delete-button', n_clicks=0, className='navbar-btn-secondary'),
+                        html.Button(html.I(className="fas fa-list"), id='toggle-list-button', n_clicks=0, className='navbar-btn-secondary'),
                         html.Button(html.I(className="fas fa-random"), id='generate-button', n_clicks=0, className='navbar-btn-secondary'),
+                        html.Button(html.I(className="fas fa-trash"), id='clear-button', n_clicks=0, className='navbar-btn-secondary'),
                         html.Button(html.I(className="fas fa-plus"), id='add-button', n_clicks=0, className='navbar-btn')
                     ]
                 )
@@ -111,72 +92,72 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
-            style={'display': 'none'} 
+            style={'display': 'none'}
         ),
         html.Div(
             className="flex flex-center",
             children=[
                 dcc.Graph(
                     id="linear-regression-plot",
-                    style={'width': '98vw', 'height': '90vh'}
+                    style={'width': '70vw', 'height': '90vh'}
                 ),
+                html.Div(
+                    id="point-list",
+                    className="point-list",
+                    children=[],
+                    style={'display': 'none'}
+                )
             ],
         ),
     ],
 )
 
+################################
+########### Callbacks ##########
+################################
 
-###########################################
-############# Callback Area ###############
-###########################################
 
+# Toggle input area display
 @app.callback(
     Output("input-area", "style"),
-    [Input("add-button", "n_clicks"),
-     Input("delete-button", "n_clicks")]
+    [Input("add-button", "n_clicks")]
 )
-def toggle_input_area_display(add_clicks, delete_clicks):
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        return {'display': 'none'}
-
-    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
-    if button_id == 'add-button' and add_clicks % 2 == 1:
+def toggle_input_area_display(add_clicks):
+    if add_clicks % 2 == 1:
         return {'display': 'flex'}
-    elif button_id == 'delete-button' and delete_clicks > 0:
-        return {'display': 'none'}
-    else:
-        return {'display': 'none'}
+    return {'display': 'none'}
 
+# Toggle input area animation
 @app.callback(
     Output("input-area", "className"),
-    [Input("add-button", "n_clicks"),
-     Input("delete-button", "n_clicks")]
+    [Input("add-button", "n_clicks")]
 )
-def toggle_input_area_animation(add_clicks, delete_clicks):
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        return ''
-
-    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
-    if button_id == 'add-button' and add_clicks % 2 == 1:
+def toggle_input_area_animation(add_clicks):
+    if add_clicks % 2 == 1:
         return 'show'
-    elif button_id == 'delete-button' and delete_clicks > 0:
-        return ''
-    else:
-        return ''
-    
+    return ''
+
+# Toggle point list display
+@app.callback(
+    Output("point-list", "style"),
+    [Input("toggle-list-button", "n_clicks")]
+)
+def toggle_point_list_display(toggle_clicks):
+    if toggle_clicks % 2 == 1:
+        return {'display': 'block'}
+    return {'display': 'none'}
+
+# Update plot und point list
 @app.callback(
     Output("linear-regression-plot", "figure"),
+    Output("point-list", "children"),
     [Input("submit-btn", "n_clicks"),
-     Input("delete-button", "n_clicks"),
-     Input("generate-button", "n_clicks")],
+     Input("generate-button", "n_clicks"),
+     Input("clear-button", "n_clicks")],
     [State("input_x", "value"),
      State("input_y", "value")]
 )
-def update_plot(submit_clicks, delete_clicks, generate_clicks, input_x, input_y):
+def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
     ctx = dash.callback_context
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
@@ -185,14 +166,14 @@ def update_plot(submit_clicks, delete_clicks, generate_clicks, input_x, input_y)
             data["X"].append(input_x)
             data["Y"].append(input_y)
 
-    elif button_id == 'delete-button' and delete_clicks > 0:
-        data["X"] = []
-        data["Y"] = []
-
     elif button_id == 'generate-button' and generate_clicks > 0:
         new_data = generate_random_points()
         data["X"] = new_data["X"]
         data["Y"] = new_data["Y"]
+
+    elif button_id == 'clear-button' and clear_clicks > 0:
+        data["X"] = []
+        data["Y"] = []
 
     if data["X"] and data["Y"]:
         model, predictions = create_model(data)
@@ -217,7 +198,18 @@ def update_plot(submit_clicks, delete_clicks, generate_clicks, input_x, input_y)
     else:
         fig = px.scatter()
 
-    return fig if fig.data else px.scatter()
+    point_list_children = []
+    for x, y in zip(data["X"], data["Y"]):
+        point_list_children.append(
+            html.Div(
+                className="point-item",
+                children=[
+                    html.Span(f"X: {x}, Y: {y}")
+                ]
+            )
+        )
+
+    return fig if fig.data else px.scatter(), point_list_children
 
 if __name__ == "__main__":
     app.run_server(debug=True)
