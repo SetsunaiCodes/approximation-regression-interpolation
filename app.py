@@ -204,7 +204,7 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
             html.Div(
                 className="point-item",
                 children=[
-                    html.Span(f"X: {x}, Y: {y}")
+                    html.Span(f"({x},{y})")
                 ]
             )
         )
