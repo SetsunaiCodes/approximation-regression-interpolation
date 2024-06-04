@@ -92,6 +92,7 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
+            #FIXME: Overflow bug
             style={'display': 'none'}
         ),
         html.Div(
