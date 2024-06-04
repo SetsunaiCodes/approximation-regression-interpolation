@@ -92,22 +92,33 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
-            #FIXME: Overflow bug
             style={'display': 'none'}
         ),
         html.Div(
             className="flex flex-center",
+            id = "presentation-container",
             children=[
+                html.Div(
+                    id="margin-container",
+                    className="margin-container",
+                    children=[]
+                ),
                 dcc.Graph(
                     id="linear-regression-plot",
                     style={'width': '70vw', 'height': '90vh'}
                 ),
                 html.Div(
-                    id="point-list",
-                    className="point-list",
-                    children=[],
-                    style={'display': 'none'}
-                )
+                    id="margin-container",
+                    className="margin-container",
+                    children=[
+                        html.Div(
+                            id="point-list",
+                            className="point-list",
+                            children=[],
+                            style={'display': 'none'}
+                        )
+                    ]
+                ),
             ],
         ),
     ],
