@@ -8,7 +8,6 @@ import plotly.express as px
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
-import statsmodels.api as sm
 
 # Data Object
 data = {
@@ -16,13 +15,30 @@ data = {
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
-# Func um das Regresionsmodell und die Vorhersage zu generieren
-def create_model(data):
-    X = sm.add_constant(data["X"])
-    Y = data["Y"]
-    model = sm.OLS(Y, X).fit()
-    predictions = model.predict(X)
-    return model, predictions
+#########################################################
+## Func um die lineare Regression manuell zu berechnen ##
+#########################################################
+
+def calculate_manual_regression(data):
+    X = np.array(data["X"])
+    Y = np.array(data["Y"])
+    n = len(X)
+    
+    sum_X = np.sum(X)
+    sum_Y = np.sum(Y)
+    sum_XY = np.sum(X * Y)
+    sum_X2 = np.sum(X ** 2)
+    
+    nenner = n * sum_X2 - sum_X ** 2
+    if nenner == 0:
+        #Nenner meint hier den obere Bereich der Ausgangsfunktion
+        #Edgecase
+        raise ValueError("Der Nenner ist 0. Regression kann nicht berechnet werden.")
+    
+    a = (n * sum_XY - sum_X * sum_Y) / nenner
+    b = (sum_Y * sum_X2 - sum_X * sum_XY) / nenner
+    
+    return a, b
 
 # Func um random Punkte zu generiern
 def generate_random_points():
@@ -34,8 +50,6 @@ def generate_random_points():
         new_data["Y"].append(y)
     return new_data
 
-model, predictions = create_model(data)
-
 # Externes Stylesheet Font Awesome
 external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css']
 
@@ -45,7 +59,6 @@ app.css.config.serve_locally = True
 ################################
 ########### App Layout #########
 ################################
-
 
 app.layout = html.Div(
     [
@@ -99,6 +112,7 @@ app.layout = html.Div(
             id = "presentation-container",
             children=[
                 html.Div(
+                    
                     className="margin-container",
                     children=[]
                 ),
@@ -186,10 +200,18 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
         data["X"] = []
         data["Y"] = []
 
-    if data["X"] and data["Y"]:
-        model, predictions = create_model(data)
+####################################################################
+#### Manuelles Berechnen und Einbinden der Steigungs Lineare #######
+####################################################################
 
-        fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
+    if data["X"] and data["Y"]:
+        a, b = calculate_manual_regression(data)
+        X = np.array(data["X"])
+        Y = np.array(data["Y"])
+        regression_line = a * X + b
+
+        fig = px.scatter(x=X, y=Y)
+        fig.add_scatter(x=X, y=regression_line, mode='lines', name='Regression Line')
 
         fig.update_traces(marker=dict(color='rgb(15, 91, 152)', size=10),
                           selector=dict(mode='markers'))

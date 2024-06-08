@@ -45,6 +45,7 @@ body, html {
 
 /*Components*/
 /*FIXME: Die Transition funktioniert nicht richtig*/
+
 #input-area {
     display: flex;
     justify-content: center;
@@ -109,7 +110,7 @@ body, html {
     object-fit: contain;
 }
 
-#margin-container{
+.margin-container{
     width: 15vw;
 }
 
