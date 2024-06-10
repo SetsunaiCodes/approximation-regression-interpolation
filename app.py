@@ -223,4 +223,4 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
     return fig if fig.data else px.scatter(), point_list_children
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run_server(debug=False)
