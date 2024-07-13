@@ -108,18 +108,22 @@ app.layout = html.Div(
             style={'display': 'none'}
         ),
         
+        dcc.Tabs(id="tabs", value='tab-1', className="custom-tabs", children=[
+            dcc.Tab(label='Regression', value='tab-1',className='custom-tab',selected_className='custom-tab--selected'),
+            dcc.Tab(label='Interpolation', value='tab-2',className='custom-tab',selected_className='custom-tab--selected'),
+        ]),
+        
         html.Div(
             className="flex flex-center",
-            id = "presentation-container",
+            id="presentation-container",
             children=[
                 html.Div(
-                    
                     className="margin-container",
                     children=[]
                 ),
                 dcc.Graph(
-                    id="linear-regression-plot",
-                    style={'width': '70vw', 'height': '90vh'}
+                    id="plot",
+                    style={'width': '70vw', 'height': '80vh'}
                 ),
                 html.Div(
                     id="margin-container",
@@ -175,15 +179,16 @@ def toggle_point_list_display(toggle_clicks):
 
 # Update plot und point list
 @app.callback(
-    Output("linear-regression-plot", "figure"),
+    Output("plot", "figure"),
     Output("point-list", "children"),
     [Input("submit-btn", "n_clicks"),
      Input("generate-button", "n_clicks"),
-     Input("clear-button", "n_clicks")],
+     Input("clear-button", "n_clicks"),
+     Input("tabs", "value")],
     [State("input_x", "value"),
      State("input_y", "value")]
 )
-def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
+def update_plot(submit_clicks, generate_clicks, clear_clicks, tab, input_x, input_y):
     ctx = dash.callback_context
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
@@ -201,18 +206,18 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
         data["X"] = []
         data["Y"] = []
 
-####################################################################
-#### Manuelles Berechnen und Einbinden der Steigungs Lineare #######
-####################################################################
-
     if data["X"] and data["Y"]:
-        a, b = calculate_manual_regression(data)
         X = np.array(data["X"])
         Y = np.array(data["Y"])
-        regression_line = a * X + b
 
-        fig = px.scatter(x=X, y=Y)
-        fig.add_scatter(x=X, y=regression_line, mode='lines', name='Regression Line')
+        if tab == 'tab-1':
+            a, b = calculate_manual_regression(data)
+            regression_line = a * X + b
+            fig = px.scatter(x=X, y=Y)
+            fig.add_scatter(x=X, y=regression_line, mode='lines', name='Line')
+        elif tab == 'tab-2':
+            fig = px.scatter(x=X, y=Y)
+            fig.add_scatter(x=X, y=np.interp(X, X, Y), mode='lines', name='Line')
 
         fig.update_traces(marker=dict(color='rgb(15, 91, 152)', size=10),
                           selector=dict(mode='markers'))
@@ -221,13 +226,13 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
                           selector=dict(mode='lines'))
 
         fig.update_layout(
-                          xaxis_title="X-Achse",
-                          yaxis_title="Y-Achse",
-                          plot_bgcolor='rgba(247, 247, 247, 1)',
-                          paper_bgcolor='rgba(247, 247, 247, 1)',
-                          font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
-                          xaxis=dict(gridcolor='rgb(211,211,211)'),
-                          yaxis=dict(gridcolor='rgb(211,211,211)'))
+            xaxis_title="X-Achse",
+            yaxis_title="Y-Achse",
+            plot_bgcolor='rgba(247, 247, 247, 1)',
+            paper_bgcolor='rgba(247, 247, 247, 1)',
+            font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
+            xaxis=dict(gridcolor='rgb(211,211,211)'),
+            yaxis=dict(gridcolor='rgb(211,211,211)'))
 
     else:
         fig = px.scatter()

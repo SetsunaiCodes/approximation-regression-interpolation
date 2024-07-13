@@ -44,7 +44,6 @@ body, html {
 
 
 /*Components*/
-/*FIXME: Die Transition funktioniert nicht richtig*/
 
 #input-area {
     display: flex;
@@ -54,11 +53,13 @@ body, html {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s ease-in-out;
+    padding-bottom: 20px;
 }
 
 #input-area.show {
     opacity: 1;
     visibility: visible;
+   
 }
 
 #input-area.hide {
@@ -179,4 +180,37 @@ body, html {
 
 .delete-point-btn:hover {
     background-color: var(--third);
+}
+
+.custom-tabs-container {
+    width: 85%;
+}
+.custom-tabs {
+    border-top-left-radius: 3px;
+    background-color: transparent !important;
+    padding: 0px 24px;
+    border-bottom: 1px solid transparent;
+}
+
+.custom-tab {
+    color:#586069;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top: 3px solid transparent !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 0px !important;
+    background-color: transparent !important;
+    padding: 12px !important;
+    font-family: "system-ui";
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+.custom-tab--selected {
+    color: black;
+    background-color: transparent !important;
+    border-left: 1px solid transparent !important;
+    border-right: 1px solid transparent !important;
+    border-top: 3px solid var(--primary) !important;
 }
