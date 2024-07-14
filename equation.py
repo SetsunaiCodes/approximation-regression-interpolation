@@ -1,19 +1,4 @@
-#Hier werden alle Rechnungen angefertigt
-
 import numpy as np;
-import statistics;
-# für line plot:
-import plotly.graph_objects as go;
-import time
-from scipy.interpolate import interp1d
-
-
-# Daten als Dictionary (importieren)
-# from app.py import data
-data = {
-    "X": [1, 2, 3, 4, 5, 6, 7],
-    "Y": [2, 3, 5, 4, 6, 6, 7]
-}
 
 # Regression:
 ################################################################################################
@@ -38,12 +23,12 @@ def regression(data):
     
     # Summe aus (x - dem Mittelwert)^2
     Sx = np.sum((x - MittelwertX) ** 2)
-    #Sy = np.sum((y - MittelwertY) ** 2)
+    Sy = np.sum((y - MittelwertY) ** 2)
 
 
     # Standardabweichung
-    #StandardabweichungX = np.sqrt(Sx / length)
-    #StandardabweichungY = np.sqrt(Sy / length)
+    StandardabweichungX = np.sqrt(Sx / length)
+    StandardabweichungY = np.sqrt(Sy / length)
 
 
     # Kovarianz
@@ -51,7 +36,7 @@ def regression(data):
     Kovarianz = xy / length
 
     # Korrelationskoeffizient
-    #Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
+    Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
     
     b = Kovarianz / Sx * length
     a = MittelwertY - b * MittelwertX
@@ -64,7 +49,6 @@ def regression(data):
 
 # Interpolation:
 ################################################################################################
-
 def interpolation(data):
     x = np.array(data["X"])
     y = np.array(data["Y"])
