@@ -8,9 +8,6 @@ import time
 from scipy.interpolate import interp1d
 
 
-
-start_time = time.time()
-
 # Daten als Dictionary (importieren)
 # from app.py import data
 data = {
@@ -21,10 +18,14 @@ data = {
 # Regression:
 ################################################################################################
 
-def regress2(data):
+def regression(data):
 
-    # Dynamisch Laenge von X zwischenspeichern
+    # Dynamisch Länge von X zwischenspeichern
     length = len(data["X"])
+    
+    # Überprüfung für weniger als zwei Datenpunkte
+    if length < 2:
+        return data["X"], data["Y"]
     
     # Konvertieren der Listen zu Arrays, weil Numpy dann damit rechnen kann (Numpy hat issues mit Listen).
     x = np.array(data["X"])
@@ -37,22 +38,22 @@ def regress2(data):
     
     # Summe aus (x - dem Mittelwert)^2
     Sx = np.sum((x - MittelwertX) ** 2)
-    Sy = np.sum((y - MittelwertY) ** 2)
+    #Sy = np.sum((y - MittelwertY) ** 2)
 
 
     # Standardabweichung
-    # StandardabweichungX = np.sqrt(Sx / length)
-    # StandardabweichungY = np.sqrt(Sy / length)
+    #StandardabweichungX = np.sqrt(Sx / length)
+    #StandardabweichungY = np.sqrt(Sy / length)
 
 
     # Kovarianz
     xy = np.sum((x - MittelwertX) * (y - MittelwertY))
     Kovarianz = xy / length
 
-    # Korrelatoionskoeffizient
-    # Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
+    # Korrelationskoeffizient
+    #Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
     
-    b = Kovarianz / Sx *length
+    b = Kovarianz / Sx * length
     a = MittelwertY - b * MittelwertX
     
     # Definieren der Prognose
@@ -60,15 +61,18 @@ def regress2(data):
 
     return x, yPrognose
 
+
 # Interpolation:
 ################################################################################################
 
-def interpolate(data):
+def interpolation(data):
     x = np.array(data["X"])
     y = np.array(data["Y"])
+
+    # Überprüfen, ob die Eingabedaten leer sind
+    if len(x) == 0 or len(y) == 0:
+        return x, y
 
     f = np.interp(x, x, y)
 
     return x, f
-
-print("---- %s sconds ---" % (time.time() - start_time))

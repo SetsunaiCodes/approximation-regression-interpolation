@@ -2,35 +2,31 @@
 ########### Imports ############
 ################################
 
-# Python Imports
-import random
-import statsmodels.api as sm
 
-#Math Imports
+# Math Imports
 import numpy as np
+import random
 
-#Graph Backkend Imports (Plotly)
+# Visual Imports
 import plotly.express as px
-
-# Dash Imports (Display und Compiling)
 import dash
 from dash import dcc, html
 from dash.dependencies import Input, Output, State
 
+# Manuelle Regression und Interpolation
+from equation import regression, interpolation
+
+
+################################
+########## Init Area ###########
+################################
+
 
 # Data Object
 data = {
-    "X": [1, 2, 3, 4, 6, 4, 2],
+    "X": [1, 2, 3, 4, 5, 6, 7],
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
-
-# Func um das Regresionsmodell und die Vorhersage zu generieren
-def create_model(data):
-    X = sm.add_constant(data["X"])
-    Y = data["Y"]
-    model = sm.OLS(Y, X).fit()
-    predictions = model.predict(X)
-    return model, predictions
 
 # Func um random Punkte zu generiern
 def generate_random_points():
@@ -41,24 +37,19 @@ def generate_random_points():
         new_data["X"].append(x)
         new_data["Y"].append(y)
     return new_data
-# Orieniiert sich an einer Sinuskurve und fügt Entropie im Intervall -0.5 | 1.5 hinzu
-
-model, predictions = create_model(data)
 
 # Externes Stylesheet Font Awesome
 external_stylesheets = ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css']
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.css.config.serve_locally = True
-
 
 ################################
 ########### App Layout #########
 ################################
 
-
 app.layout = html.Div(
     [
-        #Navbar
         html.Nav(
             className="navbar",
             children=[
@@ -79,7 +70,6 @@ app.layout = html.Div(
                 )
             ]
         ),
-        #Input Area Add Button
         html.Div(
             id="input-area",
             className='',
@@ -103,32 +93,30 @@ app.layout = html.Div(
                     className='submit-btn'
                 ),
             ],
-            style={'display': 'none'} #Ändert sich über onClick in den Callbacks
+            style={'display': 'none'}
         ),
-        #Main Container
+        
+        dcc.Tabs(id="tabs", value='tab-1', className="custom-tabs", children=[
+            dcc.Tab(label='Regression', value='tab-1',className='custom-tab',selected_className='custom-tab--selected'),
+            dcc.Tab(label='Interpolation', value='tab-2',className='custom-tab',selected_className='custom-tab--selected'),
+        ]),
+        
         html.Div(
             className="flex flex-center",
-            id = "presentation-container",
+            id="presentation-container",
             children=[
-                # Margin Container, um Platz zu setzen
                 html.Div(
                     className="margin-container",
                     children=[]
                 ),
-                
-                # Graph
                 dcc.Graph(
-                    id="linear-regression-plot",
-                    style={'width': '70vw', 'height': '90vh'}
+                    id="plot",
+                    style={'width': '70vw', 'height': '80vh'}
                 ),
-
-                # Margin Container, um Platz zu setzen
-                # Indem sich die Point List befindet
                 html.Div(
                     id="margin-container",
                     className="margin-container",
                     children=[
-                        # Die Point List
                         html.Div(
                             id="point-list",
                             className="point-list",
@@ -147,7 +135,7 @@ app.layout = html.Div(
 ################################
 
 
-# Callback - Toggle input area display
+# Toggle input area display
 @app.callback(
     Output("input-area", "style"),
     [Input("add-button", "n_clicks")]
@@ -156,11 +144,8 @@ def toggle_input_area_display(add_clicks):
     if add_clicks % 2 == 1:
         return {'display': 'flex'}
     return {'display': 'none'}
-# Bei jedem ungeraden Wert des Button Counters öffnet sich das Fenster
-# display wird von none auf flex gesetzt und anders herum
 
-
-# Callback - Toggle input area animation
+# Toggle input area animation
 @app.callback(
     Output("input-area", "className"),
     [Input("add-button", "n_clicks")]
@@ -170,7 +155,7 @@ def toggle_input_area_animation(add_clicks):
         return 'show'
     return ''
 
-# Callback - Toggle point list display
+# Toggle point list display
 @app.callback(
     Output("point-list", "style"),
     [Input("toggle-list-button", "n_clicks")]
@@ -179,54 +164,52 @@ def toggle_point_list_display(toggle_clicks):
     if toggle_clicks % 2 == 1:
         return {'display': 'block'}
     return {'display': 'none'}
-# Bei jedem ungeraden Wert des Button Counters wird die Liste im Margin Container sichtbar
-# display wird von none auf block gesetzt und anders herum
 
-# Callback - Update plot und point list
+# Update plot und point list
 @app.callback(
-    Output("linear-regression-plot", "figure"),
+    Output("plot", "figure"),
     Output("point-list", "children"),
     [Input("submit-btn", "n_clicks"),
      Input("generate-button", "n_clicks"),
-     Input("clear-button", "n_clicks")],
+     Input("clear-button", "n_clicks"),
+     Input("tabs", "value")],
     [State("input_x", "value"),
      State("input_y", "value")]
 )
-
-# Funktion um Punkte hinzuzufügen, Random Sets einzubinden oder den Satz zu löschen
-def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
+def update_plot(submit_clicks, generate_clicks, clear_clicks, tab, input_x, input_y):
     ctx = dash.callback_context
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
-    # Wenn Submit Add Button gedrückt wird, wird der Content aus den Inputs in den Graphen
-    # und in die Liste eingearbeitet
     if button_id == 'submit-btn' and submit_clicks > 0:
         if input_x is not None and input_y is not None:
             data["X"].append(input_x)
             data["Y"].append(input_y)
 
-    # Wenn generate Random Button gedrückt wird, wird ein neuer Datensatz unter der oben initialisierten
-    # generate_random_points() Funktion eingearbeitet.
     elif button_id == 'generate-button' and generate_clicks > 0:
         new_data = generate_random_points()
         data["X"] = new_data["X"]
         data["Y"] = new_data["Y"]
 
-    # Wenn clear Button gedrückt wird, dann werden die beiden Dictionaries für X und Y geleert. 
     elif button_id == 'clear-button' and clear_clicks > 0:
         data["X"] = []
         data["Y"] = []
 
-    # Sicherheitsabfrage ob X und Y existieren und nicht Falsy sind. 
     if data["X"] and data["Y"]:
+        X = np.array(data["X"])
+        Y = np.array(data["Y"])
 
-        # Datensatz in für Dash compilierbare Syntax ändern
-        model, predictions = create_model(data)
 
-        # Datensatz über Dash zu angezeigtem Graphen scattern
-        fig = px.scatter(x=data["X"], y=data["Y"], trendline="ols")
 
-        # Styling des Graphens
+        if tab == 'tab-1':
+            werteX, werteY = regression(data)
+            #regression_line = a * X + b
+            fig = px.scatter(x=X, y=Y)
+            fig.add_scatter(x=werteX, y=werteY, mode='lines', name='Line')
+        elif tab == 'tab-2':
+            werteX, werteY = interpolation(data)
+            fig = px.scatter(x=X, y=Y)
+            fig.add_scatter(x=werteX, y=werteY, mode='lines', name='Line')
+
         fig.update_traces(marker=dict(color='rgb(15, 91, 152)', size=10),
                           selector=dict(mode='markers'))
 
@@ -234,19 +217,17 @@ def update_plot(submit_clicks, generate_clicks, clear_clicks, input_x, input_y):
                           selector=dict(mode='lines'))
 
         fig.update_layout(
-                          xaxis_title="X-Achse",
-                          yaxis_title="Y-Achse",
-                          plot_bgcolor='rgba(247, 247, 247, 1)',
-                          paper_bgcolor='rgba(247, 247, 247, 1)',
-                          font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
-                          xaxis=dict(gridcolor='rgb(211,211,211)'),
-                          yaxis=dict(gridcolor='rgb(211,211,211)'))
+            xaxis_title="X-Achse",
+            yaxis_title="Y-Achse",
+            plot_bgcolor='rgba(247, 247, 247, 1)',
+            paper_bgcolor='rgba(247, 247, 247, 1)',
+            font=dict(family="Arial", size=12, color="rgb(88,88,88)"),
+            xaxis=dict(gridcolor='rgb(211,211,211)'),
+            yaxis=dict(gridcolor='rgb(211,211,211)'))
 
     else:
         fig = px.scatter()
 
-    # Liste generieren
-    # Wird per for Schleife gemacht, da die Liste so dynamisch at runtime bleibt
     point_list_children = []
     for x, y in zip(data["X"], data["Y"]):
         point_list_children.append(
