@@ -1,63 +1,72 @@
 #Hier werden alle Rechnungen angefertigt
 
+import numpy as np;
+import statistics;
+# für line plot:
+import plotly.graph_objects as go;
+import time
+from scipy.interpolate import interp1d
 
-# Daten als Dictionary
+
+
+start_time = time.time()
+
+# Daten als Dictionary (importieren)
+# from app.py import data
 data = {
-    "X": [1, 2, 3, 4, 5, 4, 5],
+    "X": [1, 2, 3, 4, 5, 6, 7],
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
-# unabhängige Variable
-x = data["X"]
-# abhängige Variable
-y = data["Y"]
+
+################################################################################################
+################################################################################################
+################################################################################################
+
+def regress2(data):
+
+    # Dynamisch Laenge von X zwischenspeichern
+    length = len(data["X"])
+    
+    # Konvertieren der Listen zu Arrays, weil Numpy dann damit rechnen kann (Numpy hat issues mit Listen).
+    x = np.array(data["X"])
+    y = np.array(data["Y"])
+
+    # Mittelwert berechnen
+    MittelwertX = np.mean(x)
+    MittelwertY = np.mean(y)
+
+    
+    # Standardabweichung
+
+    # Summe aus (x - dem Mittelwert)^2
+    Sx = np.sum((x - MittelwertX) ** 2)
+    Sy = np.sum((y - MittelwertY) ** 2)
+
+    StandardabweichungX = np.sqrt(Sx / length)
+    StandardabweichungY = np.sqrt(Sy / length)
 
 
-###  Mittelwert berechnen  ###
+    # Kovarianz
+    xy = np.sum((x - MittelwertX) * (y - MittelwertY))
+    Kovarianz = xy / length
 
-# Summe aller Werte / Anzahl an Werten
-MittelwertX = sum(x) / len(x)
-MittelwertY = sum(y) / len(y)
-# Mittelwert einer Liste mit numpy berechnen:   numpy.mean(X)
-# Mittelwert mit statistics berechnen:          statistics.mean(list)
+    # Korrelatoionskoeffizient
+    Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
+    
+    b = Kovarianz / Sx *length
+    a = MittelwertY - b * MittelwertX
+    
+    # Definieren der Prognose
+    yPrognose = [b * xi + a for xi in x]
 
+    return x, yPrognose
 
+def interpolate(data):
+    x = np.array(data["X"])
+    y = np.array(data["Y"])
 
-###  Steigung (m)  ###
+    f = np.interp(x, x, y)
 
-Sx = 0
-Sxy = 0
+    return x, f
 
-for i in x:
-    Sx += (x[i] - MittelwertX)**2 
-    # Alternativen zum quadrieren: pow() und math.pow()
-
-for i in x:
-    Sxy += (x[i] - MittelwertX)**2 * (y[i] - MittelwertY)**2
-
-
-Steigung = Sx / Sxy
-
-
-###  Konstante => y-Achsenabschnitt  ###
-
-# -> Konstante = Steigung * x[i] + y[i]
-
-sumKonst = 0
-for i in x:
-    Konstante = Steigung * x[i] + y[i]
-    print(f'xi: {x[i]}  yi: {y[i]} Konstante: {Konstante}')
-    sumKonst += Konstante
-
-Konstante=sumKonst/len(x)
-print(Konstante)
-
-
-###  lineare Regressionsgrade  ###
-# y = m*x + b
-
-
-
-
-# Anleitung Interpolation: https://www.w3schools.com/python/scipy/scipy_interpolation.php
-
-
+print("---- %s sconds ---" % (time.time() - start_time))
