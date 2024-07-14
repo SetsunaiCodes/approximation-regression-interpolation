@@ -18,8 +18,7 @@ data = {
     "Y": [2, 3, 5, 4, 6, 6, 7]
 }
 
-################################################################################################
-################################################################################################
+# Regression:
 ################################################################################################
 
 def regress2(data):
@@ -36,14 +35,14 @@ def regress2(data):
     MittelwertY = np.mean(y)
 
     
-    # Standardabweichung
-
     # Summe aus (x - dem Mittelwert)^2
     Sx = np.sum((x - MittelwertX) ** 2)
     Sy = np.sum((y - MittelwertY) ** 2)
 
-    StandardabweichungX = np.sqrt(Sx / length)
-    StandardabweichungY = np.sqrt(Sy / length)
+
+    # Standardabweichung
+    # StandardabweichungX = np.sqrt(Sx / length)
+    # StandardabweichungY = np.sqrt(Sy / length)
 
 
     # Kovarianz
@@ -51,7 +50,7 @@ def regress2(data):
     Kovarianz = xy / length
 
     # Korrelatoionskoeffizient
-    Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
+    # Korrelation = Kovarianz / (StandardabweichungX * StandardabweichungY)
     
     b = Kovarianz / Sx *length
     a = MittelwertY - b * MittelwertX
@@ -60,6 +59,9 @@ def regress2(data):
     yPrognose = [b * xi + a for xi in x]
 
     return x, yPrognose
+
+# Interpolation:
+################################################################################################
 
 def interpolate(data):
     x = np.array(data["X"])
